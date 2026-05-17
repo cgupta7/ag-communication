@@ -43,12 +43,14 @@ function ProductImage({ src, alt, brandId }) {
   }
 
   return (
-    <img
-      src={src}
-      alt={alt}
-      onError={() => setFailed(true)}
-      className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
-    />
+    <div className="w-full h-full rounded-3xl overflow-hidden">
+      <img
+        src={src}
+        alt={alt}
+        onError={() => setFailed(true)}
+        className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+      />
+    </div>
   )
 }
 
@@ -76,7 +78,7 @@ function ProductCard({ product, index }) {
       )}
 
       {/* Image area */}
-      <div className="relative h-52 flex items-center justify-center p-6 bg-gradient-to-br from-gray-50/80 to-white/60">
+      <div className="relative h-52 flex items-center justify-center p-6 bg-gradient-to-br from-gray-50/80 to-white/60 mx-3 mt-3 rounded-3xl overflow-hidden">
         {/* Ambient glow */}
         <div
           className="absolute inset-0 opacity-0 group-hover:opacity-15 transition-opacity duration-500 blur-2xl"
