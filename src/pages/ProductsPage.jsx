@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import { products, BRAND_META, CATEGORIES } from '../data/products'
 import { brand, social, waLink } from '../config'
+import { AGLogo } from '../components/AGLogo'
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -187,13 +188,16 @@ export default function ProductsPage() {
             <span className="hidden sm:inline text-xs font-semibold">Home</span>
           </Link>
 
-          <Link to="/" className="font-black text-sm tracking-tight text-gray-900 select-none flex-shrink-0">
-            {brand.name.split(' ')[0]}{' '}
-            <span
-              className="text-transparent bg-clip-text"
-              style={{ backgroundImage: 'linear-gradient(to right, #fb923c, #f43f5e, #ec4899)' }}
-            >
-              {brand.name.split(' ').slice(1).join(' ')}
+          <Link to="/" className="flex items-center gap-2 select-none flex-shrink-0">
+            <AGLogo size={30} />
+            <span className="font-black text-sm tracking-tight text-gray-900">
+              {brand.name.split(' ')[0]}{' '}
+              <span
+                className="text-transparent bg-clip-text"
+                style={{ backgroundImage: 'linear-gradient(to right, #fb923c, #f43f5e, #ec4899)' }}
+              >
+                {brand.name.split(' ').slice(1).join(' ')}
+              </span>
             </span>
           </Link>
 
