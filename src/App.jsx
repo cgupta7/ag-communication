@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import { brand, social, location, reels, waLink } from './config'
 import {
   motion,
@@ -327,7 +328,7 @@ function Hero() {
       </motion.div> */}
 
       {/* Headline — word by word slide-up */}
-      <div className="font-black tracking-tight leading-[1.0] mb-8" style={{ fontSize: 'clamp(3rem, 10vw, 7.5rem)' }}>
+      <h1 className="font-black tracking-tight leading-[1.0] mb-8" style={{ fontSize: 'clamp(3rem, 10vw, 7.5rem)' }}>
         {HEADLINE_WORDS.map((word, i) => (
           <div key={word.text} className="overflow-hidden">
             <motion.div
@@ -342,7 +343,7 @@ function Hero() {
             </motion.div>
           </div>
         ))}
-      </div>
+      </h1>
 
       {/* BUY | SELL | EXCHANGE */}
       <motion.div
@@ -861,6 +862,11 @@ function WhatsAppFAB() {
 function LandingPage() {
   return (
     <div className="relative min-h-screen overflow-x-hidden selection:bg-pink-100 selection:text-pink-900">
+      <Helmet>
+        <title>{brand.nameDisplay} | {brand.tagline}</title>
+        <meta name="description" content={brand.description} />
+        <link rel="canonical" href="https://agcommunication.in/" />
+      </Helmet>
       <ScrollProgressBar />
       <AmbientBg />
       <Navbar />

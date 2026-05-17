@@ -1,5 +1,6 @@
 import { useState, useMemo, useRef } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft,
@@ -171,6 +172,14 @@ export default function ProductsPage() {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden selection:bg-pink-100 selection:text-pink-900">
+      <Helmet>
+        <title>
+          {activeBrand === 'all' ? 'All Products' : `${BRAND_META[activeBrand]?.label} Products`} 
+          {activeCategory !== 'All' ? ` - ${activeCategory}` : ''} | {brand.nameDisplay}
+        </title>
+        <meta name="description" content={`Shop the latest ${activeBrand === 'all' ? 'premium electronics' : BRAND_META[activeBrand]?.label} at ${brand.nameDisplay}.`} />
+        <link rel="canonical" href="https://agcommunication.in/products" />
+      </Helmet>
       {/* Ambient BG */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none bg-white">
         <div className="absolute -top-[20%] -left-[15%] w-[70%] h-[70%] rounded-full bg-orange-200/40 mix-blend-multiply blur-[130px]" />
