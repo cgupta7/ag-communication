@@ -1,0 +1,21 @@
+{
+  "brand": {
+    "name": "AG COMMUNICATION",
+    "nameDisplay": "AG Communication",
+    "tagline": "Buy · Sell · Exchange",
+    "description": "Premium electronics — Apple, Samsung, Marshall, JBL, Dyson. Buy, Sell & Exchange at AG Communication."
+  },
+  "contact": {
+    "whatsapp": "917982276880",
+    "whatsappDisplay": "+91 79822 76880",
+    "whatsappDefaultMessage": "Hi! I'm looking for a specific product. Can you help?"
+  },
+  "social": {
+    "instagramHandle": "agcommunication.in",
+    "instagramUrl": "https://www.instagram.com/agcommunication.in/"
+  },
+  "location": {
+    "googleMapsUrl": "https://maps.app.goo.gl/twXwoQx2oeb3MtG18",
+    "address": "Shop No 3729, A/3368, Main Road, near Metro Station Kanhaiya Nagar, Kanhiya Nagar, Tri Nagar, Delhi, 110035"
+  }
+}

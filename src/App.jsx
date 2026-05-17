@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { brand, social, location, waLink } from './config'
 import {
   motion,
   useInView,
@@ -15,6 +16,7 @@ import {
   Calculator,
   Instagram,
   MessageCircle,
+  MapPin,
   ArrowRight,
   Play,
   Zap,
@@ -199,28 +201,6 @@ const fadeUp = {
   }),
 }
 
-// ─── Reusable 3-D Tilt Hook ────────────────────────────────────────────────────
-
-function useTilt(strength = 9) {
-  const x = useMotionValue(0)
-  const y = useMotionValue(0)
-  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [strength, -strength]), { stiffness: 350, damping: 28 })
-  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-strength, strength]), { stiffness: 350, damping: 28 })
-
-  const onMouseMove = useCallback((e) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    x.set((e.clientX - rect.left) / rect.width - 0.5)
-    y.set((e.clientY - rect.top) / rect.height - 0.5)
-  }, [x, y])
-
-  const onMouseLeave = useCallback(() => {
-    x.set(0)
-    y.set(0)
-  }, [x, y])
-
-  return { rotateX, rotateY, onMouseMove, onMouseLeave }
-}
-
 // ─── InView Section Helper ─────────────────────────────────────────────────────
 
 function InViewSection({ children, className = '' }) {
@@ -279,11 +259,10 @@ function AnimatedCounter({ value, suffix = '', label, decimals = 0 }) {
 
 function ScrollProgressBar() {
   const { scrollYProgress } = useScroll()
-  const scaleX = useSpring(scrollYProgress, { stiffness: 400, damping: 40 })
   return (
     <motion.div
       className="fixed top-0 left-0 right-0 h-[3px] z-[100] origin-left"
-      style={{ scaleX, background: 'linear-gradient(to right, #fb923c, #f43f5e, #ec4899)' }}
+      style={{ scaleX: scrollYProgress, background: 'linear-gradient(to right, #fb923c, #f43f5e, #ec4899)' }}
     />
   )
 }
@@ -293,21 +272,9 @@ function ScrollProgressBar() {
 function AmbientBg() {
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none bg-white">
-      <motion.div
-        animate={{ x: [0, 40, -20, 15, 0], y: [0, -25, 35, -15, 0] }}
-        transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute -top-[20%] -left-[15%] w-[70%] h-[70%] rounded-full bg-orange-200/50 mix-blend-multiply blur-[130px]"
-      />
-      <motion.div
-        animate={{ x: [0, -35, 25, -15, 0], y: [0, 25, -35, 20, 0] }}
-        transition={{ duration: 28, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
-        className="absolute top-[20%] -right-[20%] w-[70%] h-[70%] rounded-full bg-pink-200/45 mix-blend-multiply blur-[150px]"
-      />
-      <motion.div
-        animate={{ x: [0, 25, -30, 20, 0], y: [0, -20, 25, -12, 0] }}
-        transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut', delay: 6 }}
-        className="absolute bottom-0 left-[10%] w-[60%] h-[60%] rounded-full bg-rose-100/50 mix-blend-multiply blur-[120px]"
-      />
+      <div className="absolute -top-[20%] -left-[15%] w-[70%] h-[70%] rounded-full bg-orange-200/50 mix-blend-multiply blur-[130px]" />
+      <div className="absolute top-[20%] -right-[20%] w-[70%] h-[70%] rounded-full bg-pink-200/45 mix-blend-multiply blur-[150px]" />
+      <div className="absolute bottom-0 left-[10%] w-[60%] h-[60%] rounded-full bg-rose-100/50 mix-blend-multiply blur-[120px]" />
     </div>
   )
 }
@@ -324,7 +291,7 @@ function Navbar() {
     >
       <nav className="w-full max-w-5xl bg-white/55 backdrop-blur-2xl border border-white/70 shadow-[0_4px_30px_rgba(0,0,0,0.06)] rounded-full px-5 py-3 flex items-center justify-between">
         <a href="#" className="font-black text-sm sm:text-base tracking-tight text-gray-900 select-none">
-          AG <span className="text-brand-gradient">COMMUNICATION</span>
+          {brand.name.split(' ')[0]} <span className="text-brand-gradient">{brand.name.split(' ').slice(1).join(' ')}</span>
         </a>
         <div className="hidden md:flex items-center gap-1">
           <Link to="/products" className="px-4 py-2 rounded-full text-white font-bold text-xs bg-brand-gradient shadow-sm">Products</Link>
@@ -350,8 +317,8 @@ function Hero() {
   const phoneRef = useRef(null)
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
-  const rotateX = useSpring(useTransform(mouseY, [-160, 160], [14, -14]), { stiffness: 180, damping: 22 })
-  const rotateY = useSpring(useTransform(mouseX, [-160, 160], [-14, 14]), { stiffness: 180, damping: 22 })
+  const rotateX = useSpring(useTransform(mouseY, [-160, 160], [14, -14]), { stiffness: 280, damping: 32 })
+  const rotateY = useSpring(useTransform(mouseX, [-160, 160], [-14, 14]), { stiffness: 280, damping: 32 })
 
   const handlePhoneMouseMove = useCallback((e) => {
     const rect = phoneRef.current?.getBoundingClientRect()
@@ -448,7 +415,7 @@ function Hero() {
         </motion.a>
 
         <motion.a
-          href="https://wa.me/917982276880"
+          href={waLink()}
           target="_blank"
           rel="noopener noreferrer"
           whileHover={{ scale: 1.05, y: -3 }}
@@ -531,7 +498,6 @@ function Hero() {
 
 function CategoryCard({ cat, index }) {
   const { Icon, title, subtitle, desc, iconColor, accentFrom, accentTo, border, dot, filterLink } = cat
-  const { rotateX, rotateY, onMouseMove, onMouseLeave } = useTilt(9)
 
   return (
     <Link to={filterLink}>
@@ -541,10 +507,8 @@ function CategoryCard({ cat, index }) {
         whileInView="visible"
         viewport={{ once: true, margin: '-40px' }}
         variants={fadeUp}
-        onMouseMove={onMouseMove}
-        onMouseLeave={onMouseLeave}
-        style={{ rotateX, rotateY, transformPerspective: 800 }}
-        className={`relative bg-gradient-to-br ${accentFrom} ${accentTo} backdrop-blur-lg border ${border} rounded-3xl p-6 shadow-sm hover:shadow-2xl transition-shadow duration-300 cursor-pointer group overflow-hidden`}
+        whileHover={{ scale: 1.03, y: -5, transition: { type: 'spring', stiffness: 400, damping: 22 } }}
+        className={`relative bg-gradient-to-br ${accentFrom} ${accentTo} backdrop-blur-lg border ${border} rounded-3xl p-6 shadow-sm hover:shadow-xl transition-shadow duration-300 cursor-pointer group overflow-hidden will-change-transform`}
       >
         {/* animated bg glow blob */}
         <motion.div
@@ -684,7 +648,7 @@ function CategoriesAndReels() {
               <Instagram size={17} className="text-pink-500 flex-shrink-0" />
             </motion.div>
             <h2 className="text-base font-black text-gray-900 tracking-tight">
-              Latest from <span className="text-brand-gradient">@agcommunication.in</span>
+              Latest from <span className="text-brand-gradient">@{social.instagramHandle}</span>
             </h2>
           </div>
         </InViewSection>
@@ -707,7 +671,7 @@ function CategoriesAndReels() {
 
             <div className="flex justify-center mt-5">
               <motion.a
-                href="https://www.instagram.com/agcommunication.in/"
+                href={social.instagramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.06, y: -2 }}
@@ -791,9 +755,9 @@ function Footer() {
             <p className="text-gray-500 text-sm max-w-md mx-auto mb-7">
               Visit us in-store or reach out via WhatsApp for the fastest response. Trade in your old device and save big.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-3">
+            <div className="flex flex-col sm:flex-row justify-center gap-3 mb-6">
               <motion.a
-                href="https://wa.me/917982276880"
+                href={waLink()}
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.04, y: -2 }}
@@ -805,7 +769,18 @@ function Footer() {
                 <MessageCircle size={16} /> Chat on WhatsApp
               </motion.a>
               <motion.a
-                href="https://www.instagram.com/agcommunication.in/"
+                href={location.googleMapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.04, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+                className="inline-flex items-center justify-center gap-2 bg-white border border-gray-100 text-gray-800 font-bold px-7 py-3.5 rounded-full text-sm shadow-sm hover:shadow-md transition-shadow"
+              >
+                <MapPin size={16} className="text-rose-500" /> Get Directions
+              </motion.a>
+              <motion.a
+                href={social.instagramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.04, y: -2 }}
@@ -816,10 +791,16 @@ function Footer() {
                 <Instagram size={16} className="text-pink-500" /> Follow on Instagram
               </motion.a>
             </div>
+
+            {/* Address */}
+            <div className="inline-flex items-start gap-2 bg-gray-50/80 border border-gray-100 rounded-2xl px-4 py-3 text-left max-w-sm mx-auto">
+              <MapPin size={14} className="text-rose-400 flex-shrink-0 mt-0.5" />
+              <p className="text-xs text-gray-500 leading-relaxed">{location.address}</p>
+            </div>
           </div>
         </InViewSection>
         <p className="text-center text-gray-400 text-xs font-medium">
-          &copy; {new Date().getFullYear()} AG Communication. All rights reserved.
+          &copy; {new Date().getFullYear()} {brand.nameDisplay}. All rights reserved.
         </p>
       </div>
     </footer>
@@ -841,7 +822,7 @@ function WhatsAppFAB() {
       </motion.div>
 
       <motion.a
-        href="https://wa.me/917982276880"
+        href={waLink()}
         target="_blank"
         rel="noopener noreferrer"
         initial={{ scale: 0, opacity: 0, rotate: -180 }}

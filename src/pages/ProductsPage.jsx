@@ -11,15 +11,9 @@ import {
   Zap,
 } from 'lucide-react'
 import { products, BRAND_META, CATEGORIES } from '../data/products'
+import { brand, social, waLink } from '../config'
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
-
-const WA_NUMBER = '919876543210'
-
-function waLink(productName) {
-  const msg = encodeURIComponent(`Hi! I'm interested in the ${productName}. Please share the latest price and availability.`)
-  return `https://wa.me/${WA_NUMBER}?text=${msg}`
-}
 
 function formatPrice(n) {
   return '₹' + n.toLocaleString('en-IN')
@@ -194,12 +188,12 @@ export default function ProductsPage() {
           </Link>
 
           <Link to="/" className="font-black text-sm tracking-tight text-gray-900 select-none flex-shrink-0">
-            AG{' '}
+            {brand.name.split(' ')[0]}{' '}
             <span
               className="text-transparent bg-clip-text"
               style={{ backgroundImage: 'linear-gradient(to right, #fb923c, #f43f5e, #ec4899)' }}
             >
-              COMMUNICATION
+              {brand.name.split(' ').slice(1).join(' ')}
             </span>
           </Link>
 
@@ -381,7 +375,7 @@ export default function ProductsPage() {
             Can't find what you're looking for? We carry many more models in store.
           </p>
           <motion.a
-            href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Hi! I'm looking for a specific product. Can you help?")}`}
+            href={waLink()}
             target="_blank"
             rel="noopener noreferrer"
             whileHover={{ scale: 1.04 }}
@@ -393,7 +387,7 @@ export default function ProductsPage() {
             Ask on WhatsApp
           </motion.a>
           <p className="mt-6 text-xs text-gray-400">
-            &copy; {new Date().getFullYear()} AG Communication — Buy · Sell · Exchange
+            &copy; {new Date().getFullYear()} {brand.nameDisplay} — {brand.tagline}
           </p>
         </div>
       </main>
