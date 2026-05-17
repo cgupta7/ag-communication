@@ -4,6 +4,7 @@ export const brand = info.brand
 export const contact = info.contact
 export const social = info.social
 export const location = info.location
+export const reels = info.reels
 
 /** Returns a wa.me URL for a product inquiry, or a general inquiry if no name given. */
 export function waLink(productName = '') {

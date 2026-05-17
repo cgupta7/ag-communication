@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
-import { brand, social, location, waLink } from './config'
+import { brand, social, location, reels, waLink } from './config'
 import {
   motion,
   useInView,
@@ -18,10 +18,11 @@ import {
   MessageCircle,
   MapPin,
   ArrowRight,
-  Play,
   Zap,
   ChevronRight,
+  ChevronLeft,
   RefreshCw,
+  Loader2,
 } from 'lucide-react'
 import { siApple, siSamsung, siGoogle, siOneplus } from 'simple-icons'
 import ProductsPage from './pages/ProductsPage'
@@ -83,33 +84,7 @@ const CATEGORIES = [
   },
 ]
 
-const REELS = [
-  {
-    id: 1,
-    img: 'https://images.unsplash.com/photo-1605236453806-6ff36851218e?auto=format&fit=crop&w=300&q=80',
-    caption: 'iPhone 15 Pro Max',
-  },
-  {
-    id: 2,
-    img: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=300&q=80',
-    caption: 'Marshall Headphones',
-  },
-  {
-    id: 3,
-    img: 'https://images.unsplash.com/photo-1592899677958-6928f01b0f58?auto=format&fit=crop&w=300&q=80',
-    caption: 'Galaxy S24 Ultra',
-  },
-  {
-    id: 4,
-    img: 'https://images.unsplash.com/photo-1585386959984-a4155224a1ad?auto=format&fit=crop&w=300&q=80',
-    caption: 'Dyson Airwrap',
-  },
-  {
-    id: 5,
-    img: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=300&q=80',
-    caption: 'JBL Charge 5',
-  },
-]
+// Reels are now loaded from config/info.json — edit that file to update
 
 const MARQUEE_ITEMS = [
   'Apple', 'Samsung', 'Google', 'OnePlus', 'Marshall', 'Dyson',
@@ -336,7 +311,7 @@ function Hero() {
     <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 pt-28 pb-16">
 
       {/* Badge */}
-      <motion.div
+      {/* <motion.div
         initial={{ opacity: 0, y: 20, scale: 0.9 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ delay: 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
@@ -349,7 +324,7 @@ function Hero() {
         <motion.span animate={{ rotate: [0, -15, 10, -15, 0] }} transition={{ delay: 1.7, duration: 0.6 }}>
           <Zap size={11} className="text-pink-400" />
         </motion.span>
-      </motion.div>
+      </motion.div> */}
 
       {/* Headline — word by word slide-up */}
       <div className="font-black tracking-tight leading-[1.0] mb-8" style={{ fontSize: 'clamp(3rem, 10vw, 7.5rem)' }}>
@@ -500,7 +475,7 @@ function CategoryCard({ cat, index }) {
   const { Icon, title, subtitle, desc, iconColor, accentFrom, accentTo, border, dot, filterLink } = cat
 
   return (
-    <Link to={filterLink}>
+    <Link to={filterLink} className="h-full">
       <motion.div
         custom={index}
         initial="hidden"
@@ -508,7 +483,7 @@ function CategoryCard({ cat, index }) {
         viewport={{ once: true, margin: '-40px' }}
         variants={fadeUp}
         whileHover={{ scale: 1.03, y: -5, transition: { type: 'spring', stiffness: 400, damping: 22 } }}
-        className={`relative bg-gradient-to-br ${accentFrom} ${accentTo} backdrop-blur-lg border ${border} rounded-3xl p-6 shadow-sm hover:shadow-xl transition-shadow duration-300 cursor-pointer group overflow-hidden will-change-transform`}
+        className={`h-full relative bg-gradient-to-br ${accentFrom} ${accentTo} backdrop-blur-lg border ${border} rounded-3xl p-6 shadow-sm hover:shadow-xl transition-shadow duration-300 cursor-pointer group overflow-hidden will-change-transform`}
       >
         {/* animated bg glow blob */}
         <motion.div
@@ -545,41 +520,45 @@ function CategoryCard({ cat, index }) {
   )
 }
 
-// ─── Reel Card ─────────────────────────────────────────────────────────────────
+// ─── Instagram Reel Embed ──────────────────────────────────────────────────────
 
-function ReelCard({ reel, index }) {
+function InstagramReelEmbed({ url, index }) {
+  const [loaded, setLoaded] = useState(false)
+  const reelId = url.match(/\/reel\/([^/]+)/)?.[1]
+  if (!reelId) return null
+  const embedUrl = `https://www.instagram.com/reel/${reelId}/embed/`
+
   return (
     <motion.div
       custom={index}
       initial={{ opacity: 0, x: 40, scale: 0.92 }}
       whileInView={{ opacity: 1, x: 0, scale: 1 }}
       viewport={{ once: true }}
-      transition={{ delay: index * 0.07, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ scale: 1.06, y: -4, transition: { type: 'spring', stiffness: 350, damping: 18 } }}
-      className="relative flex-shrink-0 min-w-[130px] h-[232px] rounded-2xl overflow-hidden snap-center border border-white/10 cursor-pointer group"
+      transition={{ delay: index * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      className="relative flex-shrink-0 snap-center"
     >
-      <motion.img
-        src={reel.img}
-        alt={reel.caption}
-        className="absolute inset-0 w-full h-full object-cover opacity-80"
-        whileHover={{ scale: 1.08, opacity: 1 }}
-        transition={{ duration: 0.35 }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-      <div className="absolute top-2.5 left-2.5 bg-black/50 backdrop-blur-sm rounded-lg p-1.5">
-        <Instagram size={11} className="text-white" />
+      <div className="w-[320px] h-[640px] rounded-2xl overflow-hidden border border-white/10 bg-gray-900 relative">
+        {/* Loading skeleton */}
+        {!loaded && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-10">
+            <Loader2 size={24} className="text-pink-500 animate-spin" />
+            <span className="text-white/40 text-xs font-medium">Loading reel…</span>
+          </div>
+        )}
+        <iframe
+          src={embedUrl}
+          width="100%"
+          height="100%"
+          frameBorder="0"
+          scrolling="no"
+          loading="lazy"
+          allowTransparency="true"
+          allow="encrypted-media"
+          title={`Instagram Reel ${index + 1}`}
+          onLoad={() => setLoaded(true)}
+          style={{ border: 'none', opacity: loaded ? 1 : 0, transition: 'opacity 0.4s ease' }}
+        />
       </div>
-      <motion.div
-        className="absolute inset-0 flex items-center justify-center"
-        initial={{ opacity: 0, scale: 0.7 }}
-        whileHover={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.2 }}
-      >
-        <div className="w-11 h-11 rounded-full bg-white/25 backdrop-blur-sm flex items-center justify-center border border-white/50">
-          <Play size={15} className="text-white fill-white ml-0.5" />
-        </div>
-      </motion.div>
-      <p className="absolute bottom-2.5 left-2.5 right-2.5 text-[10px] font-semibold text-white/90 truncate">{reel.caption}</p>
     </motion.div>
   )
 }
@@ -611,9 +590,17 @@ function Marquee() {
 // ─── Categories + Reels Section ────────────────────────────────────────────────
 
 function CategoriesAndReels() {
+  const scrollRef = useRef(null)
+
+  const scroll = useCallback((direction) => {
+    if (!scrollRef.current) return
+    const amount = 300
+    scrollRef.current.scrollBy({ left: direction === 'left' ? -amount : amount, behavior: 'smooth' })
+  }, [])
+
   return (
-    <section id="products" className="max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16 relative z-10">
-      <div>
+    <section id="products" className="max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16 relative z-10 items-stretch">
+      <div className="flex flex-col">
         <InViewSection>
           <div className="flex items-center gap-3 mb-7">
             <h2 className="text-base font-black text-gray-900 uppercase tracking-widest">Premium Categories</h2>
@@ -628,7 +615,7 @@ function CategoriesAndReels() {
         </InViewSection>
 
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+          className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1 content-start auto-rows-fr"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
@@ -665,8 +652,35 @@ function CategoriesAndReels() {
               transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             />
 
-            <div className="flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2">
-              {REELS.map((reel, i) => <ReelCard key={reel.id} reel={reel} index={i} />)}
+            {/* Scroll navigation arrows */}
+            <div className="hidden sm:flex absolute top-1/2 -translate-y-1/2 left-2 z-20">
+              <motion.button
+                onClick={() => scroll('left')}
+                whileHover={{ scale: 1.15 }}
+                whileTap={{ scale: 0.9 }}
+                className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/20 transition-colors"
+                aria-label="Scroll left"
+              >
+                <ChevronLeft size={16} />
+              </motion.button>
+            </div>
+            <div className="hidden sm:flex absolute top-1/2 -translate-y-1/2 right-2 z-20">
+              <motion.button
+                onClick={() => scroll('right')}
+                whileHover={{ scale: 1.15 }}
+                whileTap={{ scale: 0.9 }}
+                className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/20 transition-colors"
+                aria-label="Scroll right"
+              >
+                <ChevronRight size={16} />
+              </motion.button>
+            </div>
+
+            <div
+              ref={scrollRef}
+              className="flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2 px-1"
+            >
+              {reels.map((url, i) => <InstagramReelEmbed key={url} url={url} index={i} />)}
             </div>
 
             <div className="flex justify-center mt-5">
